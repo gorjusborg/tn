@@ -40,7 +40,7 @@ Assuming you've already edited and saved a note using `tn edit` with the name
 `existing-note-name` you just have to invoke the command again to review or
 edit.
 
-```
+```bash
 tn edit existing-note-name
 ```
 
@@ -48,7 +48,7 @@ tn edit existing-note-name
 
 If you just want to print the note text to the terminal (like cat would):
 
-```
+```bash
 tn show existing-note-name
 ```
 
@@ -56,7 +56,7 @@ tn show existing-note-name
 
 Want to get a list of notes you've taken? 
 
-```
+```bash
 tn list
 ```
 
@@ -67,7 +67,7 @@ edited notes should be right above your command prompt.
 
 If you want to get rid of a note? 
 
-```
+```bash
 tn remove existing-note-name
 ```
 
@@ -75,7 +75,7 @@ tn remove existing-note-name
 
 If you want to get a file path for a note? 
 
-```
+```bash
 tn file existing-note-name
 ```
 
@@ -85,7 +85,7 @@ This will print the path of the note to stdout.
 
 The project is written as a lua rock. 
 
-```
+```bash
 $ git clone <this repo>
 $ cd <repo> && luarocks make
 ```
@@ -93,7 +93,7 @@ $ cd <repo> && luarocks make
 ## Installing via luarocks
 
 You can also install via luarocks directly:
-```
+```bash
 $ luarocks install tn
 ```
 
@@ -104,7 +104,7 @@ command-line completion to speed up references to existing notes. If you have
 installed and configured the `bash-completion` package via homebrew, the
 following will install a user-specific completion script: 
 
-```
+```bash
 tn --bash-completion >> ~/.bash_completion 
 exec bash
 ```
@@ -113,7 +113,7 @@ If you don't have `bash-completion` installed (or you've installed tn
 system-wide and wish to enable completion system wide as well) you can 
 install to the bash_completion.d directory instead: 
 
-```
+```bash
 tn --bash-completion > $(brew --prefix)/etc/bash_completion.d/tn 
 exec bash
 ```
