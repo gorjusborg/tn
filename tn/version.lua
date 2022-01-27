@@ -1,9 +1,9 @@
 -- major, minor, bugfix
-local M = {0, 3, 0}
-setmetatable(M, M)
+local version = {0, 3, 0}
+setmetatable(version, version)
 
-function M:__tostring()
+function version:__tostring()
     return string.format("%d.%d.%d", unpack(self))
 end
 
-return M
+return version
