@@ -1,0 +1,7 @@
+return {
+   dependencies = {
+      fun = "0.1.3-1",
+      lua = "5.1-1",
+      luafilesystem = "1.8.0-1"
+   },
+}
