@@ -47,7 +47,7 @@ local compl_bash_script = [=[
           opts=($(tn --commands))
       else
           case "$prev" in
-              edit|remove|show)
+              edit|file|remove|show)
               opts=("$(tn list)")
               ;;
           esac
