@@ -48,7 +48,7 @@ local compl_bash_script = [=[
       else
           case "$prev" in
               edit|remove|show)
-              opts=($(tn list))
+              opts=("$(tn list)")
               ;;
           esac
       fi
