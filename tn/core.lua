@@ -85,6 +85,14 @@ local function map_select_v_fn(kname)
     end
 end
 
+local function shellQuote(str)
+  if not str then
+      return str
+  end
+
+  return "'"..str.."'"
+end
+
 function Tn:_filepath(name)
     return self.note_dir .. "/" .. name .. "." .. self.file_ext
 end
@@ -95,7 +103,7 @@ function Tn:file(name)
 end
 
 function Tn:edit(name)
-    os.execute(self.editor .. " " .. self:_filepath(name))
+    os.execute(self.editor .. " " .. shellQuote(self:_filepath(name)))
 end
 
 function Tn:show(name)
@@ -105,7 +113,7 @@ function Tn:show(name)
 end
 
 function Tn:remove(name)
-    os.remove(self:file(name))
+    os.remove(self:_filepath(name))
 end
 
 function Tn:list()
