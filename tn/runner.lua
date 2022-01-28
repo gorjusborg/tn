@@ -57,7 +57,10 @@ local function run()
 
     if cmd.subcmd == "file" then
         local name = cmd.args[1]
-        tn:file(name)
+        local _, err = pcall(tn.file, tn, name)
+        if err then
+            os.exit(1)
+        end
     end
 
     if cmd.subcmd == "edit" then

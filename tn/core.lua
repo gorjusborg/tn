@@ -19,6 +19,16 @@ local function writeln_to_fn(fd)
     end
 end
 
+local function file_exists(file)
+    local _, err = lfs.attributes(file)
+
+    if err then
+        return false
+    else
+        return true
+    end
+end
+
 function Tn.new(note_dir, editor, file_ext, out_fd)
     local self = setmetatable({}, Tn)
 
@@ -98,6 +108,8 @@ function Tn:_filepath(name)
 end
 
 function Tn:file(name)
+    local fpath = self:_filepath(name)
+    assert(lfs.attributes(fpath), "file does not exist")
     self.writeln_fn(self:_filepath(name))
     self.out_fd:flush()
 end
