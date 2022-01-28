@@ -1,5 +1,5 @@
 -- major, minor, bugfix
-local version = {0, 3, 0}
+local version = {0, 3, 1}
 setmetatable(version, version)
 
 function version:__tostring()
