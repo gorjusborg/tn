@@ -1,0 +1,6 @@
+return {
+	_all = {
+		ROOT = { "lib" },
+		lpath = "lib/?;lib/?.lua",
+	},
+}
