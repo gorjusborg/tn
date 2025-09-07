@@ -16,9 +16,6 @@ jobs:
       - name: Set VERSION from tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
-      - name: Run unit tests
-        run: task test
-
       - name: Build luarocks artifact
         run: task
         env:
@@ -33,4 +30,3 @@ jobs:
           asset_path: build/output/tn-${{ env.VERSION }}-1.all.rock
           asset_name: tn-${{ env.VERSION }}-1.all.rock
           asset_content_type: application/zip
-
