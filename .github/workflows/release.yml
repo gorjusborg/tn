@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@5ac50f778e26fac95da98d50503682459e86d566
+
+      - name: Set VERSION from tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Run unit tests
+        run: task test
+
+      - name: Build luarocks artifact  
+        run: task
+        env:
+          VERSION: ${{ env.VERSION }}
+
+      - name: Upload release artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: build/output/tn-${{ env.VERSION }}-1.all.rock
+          asset_name: tn-${{ env.VERSION }}-1.all.rock
+          asset_content_type: application/zip
