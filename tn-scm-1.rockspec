@@ -21,3 +21,9 @@ dependencies = {
 	"fun >= 0.1.3-1",
 	"luafilesystem >= 1.8.0-1",
 }
+test_dependencies = {
+	"busted",
+}
+test = {
+	type = "busted",
+}

@@ -17,10 +17,6 @@ tasks:
       - find . -maxdepth 1 -name '*.rockspec' ! -name 'tn-scm-1.rockspec' -delete
       - rm -f tn-*.rock
 
-  test:
-    cmds:
-      - busted
-
   out_dir: mkdir -p '{{.OUT_DIR}}'
 
   rockspec:
@@ -51,11 +47,12 @@ tasks:
       - out_dir
 
     cmds:
-      - cp -R lua bin {{.OUT_DIR}}
+      - cp -R lua bin spec {{.OUT_DIR}}
 
     status:
       - diff -r bin {{.OUT_DIR}}/bin
       - diff -r lua {{.OUT_DIR}}/lua
+      - diff -r spec {{.OUT_DIR}}/spec
 
   set_version:
     requires:
@@ -82,6 +79,7 @@ tasks:
     dir: "{{.OUT_DIR}}"
 
     cmds:
+      - luarocks test
       - luarocks --tree='{{.BUILD_TREE}}' make --force tn-{{.ROCKSPEC_VERSION}}.rockspec
 
   pack:

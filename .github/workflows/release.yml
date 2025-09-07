@@ -13,9 +13,6 @@ jobs:
 
       - uses: jdx/mise-action@5ac50f778e26fac95da98d50503682459e86d566
 
-      - name: Install test runner
-        run: luarocks install busted
-
       - name: Set VERSION from tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
