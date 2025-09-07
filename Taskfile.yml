@@ -88,6 +88,7 @@ tasks:
 
     requires:
       vars:
+        - OUT_DIR
         - ROCKSPEC_VERSION
         - BUILD_TREE
 
@@ -108,14 +109,19 @@ tasks:
 
     requires:
       vars:
+        - VERSION
         - OUT_DIR
         - TEST_TREE
 
     dir: "{{.OUT_DIR}}"
 
     cmds:
-      - luarocks --tree={{.TEST_TREE}} install --force tn-{{.VERSION}}-1.all.rock
-      - (cd {{.TEST_TREE}} && ./bin/tn --version && echo "[rock test pass]") || echo "[rock test fail]"
+      - |
+        export TN_NOTES_DIR=$(mktemp -d test_notes_XXXX)
+        export EDITOR=vi
+        luarocks --tree={{.TEST_TREE}} install --force tn-{{.VERSION}}-1.all.rock
+        (cd {{.TEST_TREE}} && ./bin/tn --version && echo "[rock test pass]") || (echo "[rock test fail]" && exit 1)
+        rm -r "$TN_NOTES_DIR"
 
   default:
     deps:
