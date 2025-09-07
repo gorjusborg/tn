@@ -1,3 +1,3 @@
-local tn = require("tn.core")
+local tn = require("../lua/tn/core")
 
 describe("tn", function() end)

@@ -1,4 +1,4 @@
-local cli = require("tn.cli")
+local cli = require("../lua/tn/cli")
 
 local TestOutput = {}
 TestOutput.__index = TestOutput
