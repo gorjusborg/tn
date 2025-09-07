@@ -1,0 +1,124 @@
+# https://taskfile.dev
+version: "3"
+
+vars:
+  VERSION:
+    sh: 'echo "${VERSION:-$(git rev-parse HEAD)}"'
+  ROCKSPEC_VERSION: "{{.VERSION}}-1"
+  GIT_TAG: "v{{.VERSION}}"
+  OUT_DIR: ./build/output
+  BUILD_TREE: "build_tree"
+  TEST_TREE: "test_tree"
+
+tasks:
+  clean:
+    cmds:
+      - rm -rf {{.OUT_DIR}}
+      - find . -maxdepth 1 -name '*.rockspec' ! -name 'tn-scm-1.rockspec' -delete
+      - rm -f tn-*.rock
+
+  test:
+    cmds:
+      - busted
+
+  out_dir: mkdir -p '{{.OUT_DIR}}'
+
+  rockspec:
+    deps:
+      - out_dir
+
+    requires:
+      vars:
+        - OUT_DIR
+        - ROCKSPEC_VERSION
+        - VERSION
+
+    cmds:
+      - ./build/scripts/create-versioned-rockspec tn-scm-1.rockspec {{.VERSION}} > {{.OUT_DIR}}/tn-{{.ROCKSPEC_VERSION}}.rockspec
+
+    sources:
+      - tn-scm-1.rockspec
+
+    generates:
+      - "{{.OUT_DIR}}/tn-{{.ROCKSPEC_VERSION}}.rockspec"
+
+  copy_sources:
+    requires:
+      vars:
+        - OUT_DIR
+
+    deps:
+      - out_dir
+
+    cmds:
+      - cp -R lua bin {{.OUT_DIR}}
+
+    status:
+      - diff -r bin {{.OUT_DIR}}/bin
+      - diff -r lua {{.OUT_DIR}}/lua
+
+  set_version:
+    requires:
+      vars:
+        - OUT_DIR
+
+    deps:
+      - copy_sources
+
+    cmds:
+      - find '{{.OUT_DIR}}/lua' -name '*.lua' -print0 | xargs -0 ./build/scripts/replace-source-versions {{.VERSION}}
+
+  build:
+    deps:
+      - rockspec
+      - set_version
+
+    requires:
+      vars:
+        - OUT_DIR
+        - ROCKSPEC_VERSION
+        - BUILD_TREE
+
+    dir: "{{.OUT_DIR}}"
+
+    cmds:
+      - luarocks --tree='{{.BUILD_TREE}}' make --force tn-{{.ROCKSPEC_VERSION}}.rockspec
+
+  pack:
+    deps:
+      - build
+
+    requires:
+      vars:
+        - ROCKSPEC_VERSION
+        - BUILD_TREE
+
+    dir: "{{.OUT_DIR}}"
+
+    cmds:
+      - luarocks --tree='{{.BUILD_TREE}}' pack tn {{.ROCKSPEC_VERSION}}
+
+    sources:
+      - "{{.BUILD_TREE}}/**/*"
+
+    generates:
+      - "{{.OUT_DIR}}/tn-{{.VRESION}}-1.all.rock"
+
+  test_rock:
+    deps:
+      - pack
+
+    requires:
+      vars:
+        - OUT_DIR
+        - TEST_TREE
+
+    dir: "{{.OUT_DIR}}"
+
+    cmds:
+      - luarocks --tree={{.TEST_TREE}} install --force tn-{{.VERSION}}-1.all.rock
+      - (cd {{.TEST_TREE}} && ./bin/tn --version && echo "[rock test pass]") || echo "[rock test fail]"
+
+  default:
+    deps:
+      - test_rock

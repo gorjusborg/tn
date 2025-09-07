@@ -2,6 +2,7 @@
 luac.out
 
 # luarocks build files
+*.rock
 *.src.rock
 *.zip
 *.tar.gz
@@ -39,3 +40,8 @@ luac.out
 *.x86_64
 *.hex
 
+# build artifacts
+build/output/
+
+# task cache
+.task/

@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+# Create a versioned rockspec from the template
+# Usage: create-versioned-rockspec <version> <tag>
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <template> <version>" >&2
+    exit 1
+fi
+
+TEMPLATE=$1
+VERSION="$2"
+
+# Create a versioned rockspec from the template
+sed "s/{{version}}/$VERSION/g" "$TEMPLATE"

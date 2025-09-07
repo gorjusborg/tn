@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+# Update source files with version string
+# Usage: update-version-lua <version>
+
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <srcpath> <version>" >&2
+    exit 1
+fi
+
+VERSION="$1"
+SOURCES="${@:2}"
+
+sed -i "s/{{version}}/$VERSION/g" $SOURCES

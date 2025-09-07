@@ -1,0 +1,44 @@
+#!/usr/bin/env bun
+
+/**
+ * Returns the next patch version based on existing git tags
+ */
+
+import { $ } from "bun";
+import { coerce, compare, inc } from "bun:semver";
+
+async function getNextVersion(): Promise<string> {
+  try {
+    // Get all tags from git
+    const result = await $`git tag -l`.text();
+    const tags = result.trim().split('\n').filter(tag => tag.length > 0);
+    
+    if (tags.length === 0) {
+      return "0.0.0";
+    }
+    
+    // Coerce tags to valid semver and filter out invalid ones
+    const validVersions = tags
+      .map(tag => ({ tag, version: coerce(tag) }))
+      .filter(v => v.version !== null)
+      .map(v => v.version!)
+      .sort(compare)
+      .reverse(); // Sort in descending order
+    
+    if (validVersions.length === 0) {
+      return "0.0.0";
+    }
+    
+    // Get the latest version and increment patch
+    const latest = validVersions[0];
+    return inc(latest, "patch") || "0.0.0";
+    
+  } catch (error) {
+    console.error("Error reading git tags:", error);
+    process.exit(1);
+  }
+}
+
+// Main execution
+const nextVersion = await getNextVersion();
+console.log(nextVersion);

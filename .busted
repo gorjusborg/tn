@@ -1,6 +1,6 @@
 return {
 	_all = {
-		ROOT = { "lib" },
-		lpath = "lib/?;lib/?.lua",
+		ROOT = { "./spec" },
+		lpath = "lua/?;lua/?.lua",
 	},
 }

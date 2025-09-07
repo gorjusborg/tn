@@ -1,21 +1,15 @@
-rockspec_format = "1.0"
+rockspec_format = "3.0"
 package = "tn"
-version = "scm-0"
+version = "{{version}}-1"
 source = {
-	url = "git://github.com/gorjusborg/tn",
+	url = "https://github.com/gorjusborg/tn/releases/download/v{{version}}/tn-{{version}}-1.all.rock",
 }
 description = {
 	homepage = "https://brandon.acknsyn.com/tn",
 	license = "MIT <http://opensource.org/licenses/MIT>",
+	labels = { "cli", "note-taking" },
 }
 build = {
-	type = "builtin",
-	modules = {
-		["tn.cli"] = "lib/tn/cli.lua",
-		["tn.core"] = "lib/tn/core.lua",
-		["tn.runner"] = "lib/tn/runner.lua",
-		["tn.version"] = "lib/tn/version.lua",
-	},
 	install = {
 		bin = {
 			["tn"] = "bin/tn.lua",

@@ -1,6 +1,6 @@
 local M = {}
 
-local version = require("tn.version")
+local version = "{{version}}"
 
 local usage_str = [[
 Usage: tn edit <note-name>

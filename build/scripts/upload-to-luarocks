@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+# Upload rock to LuaRocks
+# Usage: upload-to-luarocks <version>
+# Expects: LUAROCKS_API_KEY environment variable
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <version>" >&2
+    exit 1
+fi
+
+VERSION="$1"
+
+if [ -n "$LUAROCKS_API_KEY" ]; then
+  luarocks upload tn-$VERSION-1.rockspec --api-key="$LUAROCKS_API_KEY"
+else
+  echo "LUAROCKS_API_KEY not set, skipping upload to LuaRocks"
+fi
