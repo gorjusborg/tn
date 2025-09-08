@@ -7,11 +7,17 @@ vars:
   ROCKSPEC_VERSION: "{{.VERSION}}-1"
   GIT_TAG: "v{{.VERSION}}"
   OUT_DIR: ./build/output
+  ZIP_DIR: tn-{{.VERSION}}
+  ZIP_ARCHIVE: tn-
   BUILD_TREE: "build_tree"
   TEST_TREE: "test_tree"
 
 tasks:
   clean:
+    requires:
+      vars:
+        - OUT_DIR
+
     cmds:
       - rm -rf {{.OUT_DIR}}
       - find . -maxdepth 1 -name '*.rockspec' ! -name 'tn-scm-1.rockspec' -delete
@@ -47,9 +53,10 @@ tasks:
       - out_dir
 
     cmds:
-      - cp -R lua bin spec {{.OUT_DIR}}
+      - cp -R .busted lua bin spec {{.OUT_DIR}}
 
     status:
+      - diff -r .busted {{.OUT_DIR}}/.busted
       - diff -r bin {{.OUT_DIR}}/bin
       - diff -r lua {{.OUT_DIR}}/lua
       - diff -r spec {{.OUT_DIR}}/spec
@@ -81,7 +88,6 @@ tasks:
     cmds:
       - luarocks test
       - luarocks --tree='{{.BUILD_TREE}}' make --force tn-{{.ROCKSPEC_VERSION}}.rockspec
-
   pack:
     deps:
       - build
@@ -123,6 +129,36 @@ tasks:
         (cd {{.TEST_TREE}} && ./bin/tn --version && echo "[rock test pass]") || (echo "[rock test fail]" && exit 1)
         rm -r "$TN_NOTES_DIR"
 
-  default:
+  archive_rock:
     deps:
       - test_rock
+
+    dir: "{{.OUT_DIR}}"
+
+    cmds:
+      - |
+        ARCHIVE_DIR=tn-{{.VERSION}}
+        mkdir "$ARCHIVE_DIR"
+        cp -R .busted lua bin spec "$ARCHIVE_DIR"
+        zip -r "${ARCHIVE_DIR}.zip" "$ARCHIVE_DIR"
+
+  upload_rockspec:
+    deps:
+      - rockspec
+
+    requires:
+      vars:
+        - OUT_DIR
+        - ROCKSPEC_VERSION
+
+    dir: "{{.OUT_DIR}}"
+
+    preconditions:
+      - sh: test -n "${LUAROCKS_KEY-}"
+
+    cmds:
+      - luarocks upload --skip-pack --api-key "$LUAROCKS_KEY" tn-{{.ROCKSPEC_VERSION}}.rockspec
+
+  default:
+    deps:
+      - archive_rock

@@ -27,6 +27,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/output/tn-${{ env.VERSION }}-1.all.rock
-          asset_name: tn-${{ env.VERSION }}-1.all.rock
+          asset_path: build/output/tn-${{ env.VERSION }}.zip
+          asset_name: tn-${{ env.VERSION }}.zip
           asset_content_type: application/zip

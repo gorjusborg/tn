@@ -2,7 +2,8 @@ rockspec_format = "3.0"
 package = "tn"
 version = "{{version}}-1"
 source = {
-	url = "https://github.com/gorjusborg/tn/releases/download/v{{version}}/tn-{{version}}-1.all.rock",
+	url = "https://github.com/gorjusborg/tn/releases/download/v{{version}}/tn-{{version}}.zip",
+	dir = "tn-{{version}}",
 }
 description = {
 	homepage = "https://brandon.acknsyn.com/tn",
