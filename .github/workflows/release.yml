@@ -30,3 +30,9 @@ jobs:
           asset_path: build/output/tn-${{ env.VERSION }}.zip
           asset_name: tn-${{ env.VERSION }}.zip
           asset_content_type: application/zip
+
+      - name: Publish to luarocks.org
+        run: task upload_rockspec
+        env:
+          VERSION: ${{ env.VERSION }}
+          LUAROCKS_KEY: ${{ secret.LUAROCKS_KEY }}
