@@ -8,6 +8,7 @@ Usage: tn edit <note-name>
        tn file <note-name>
        tn remove <note-name>
        tn show <note-name>
+       tn copy <existing-note> <new-note>
        tn (-h | --help)
        tn --version
        tn --bash-completion
@@ -30,6 +31,7 @@ local compl_commands = {
 	"file",
 	"remove",
 	"show",
+	"copy",
 	"--help",
 	"--version",
 	"--bash-completion",
@@ -71,7 +73,7 @@ _tn_complete() {
         opts=($(tn --commands))
     else
         case "$prev" in
-            edit|file|remove|show)
+            edit|file|remove|show|copy)
             opts=("$(tn list)")
             ;;
         esac
@@ -109,7 +111,7 @@ function __tn_complete
 
     if test "$prev_cmd" = "tn" -o (count $cmd) -eq 1
         set opts (tn --commands)
-    else if contains -- $prev_cmd edit file remove show
+    else if contains -- $prev_cmd edit file remove show copy
         set opts (tn list)
     end
 
@@ -137,7 +139,7 @@ _tn() {
         tn)
             opts=($(tn --commands 2>/dev/null))
             ;;
-        edit|file|remove|show)
+        edit|file|remove|show|copy)
             opts=(${(f)"$(tn list 1>/dev/null)"})
             ;;
         *)
@@ -171,6 +173,10 @@ local function parse_args(args)
 		file = true,
 		remove = true,
 		show = true,
+	}
+
+	local twoArgCmds = {
+		copy = true,
 	}
 
 	local zeroArgCmds = {
@@ -218,6 +224,16 @@ local function parse_args(args)
 		return data
 	end
 
+	if twoArgCmds[args[1]] then
+		data.subcmd = args[1]
+		if #args == 3 then
+			data.args = { args[2], args[3] }
+		else
+			error("invalid number of arguments to " .. data.subcmd)
+		end
+		return data
+	end
+
 	local opt = zeroArgOptions[args[1]]
 	if opt then
 		if #args == 1 then
@@ -231,6 +247,7 @@ local function parse_args(args)
 
 	local validCmd = (data.subcmd == "list" and #data.args == 0 and not data.options)
 		or ((data.subcmd == "show" or data.subcmd == "edit" or data.subcmd == "remove" or data.subcmd == "file") and data.args and #data.args == 1 and not data.options)
+		or (data.subcmd == "copy" and data.args and #data.args == 2 and not data.options)
 		or (
 			not data.subcmd
 			and data.options

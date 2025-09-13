@@ -128,6 +128,27 @@ function Tn:remove(name)
     os.remove(self:_filepath(name))
 end
 
+function Tn:copy(source_name, target_name)
+    local source_path = self:_filepath(source_name)
+    local target_path = self:_filepath(target_name)
+    
+    if not file_exists(source_path) then
+        error("Note '" .. source_name .. "' does not exist")
+    end
+    
+    if file_exists(target_path) then
+        error("Note '" .. target_name .. "' already exists")
+    end
+    
+    local source_fd = assert(io.open(source_path, "r"))
+    local content = source_fd:read("*a")
+    source_fd:close()
+    
+    local target_fd = assert(io.open(target_path, "w"))
+    target_fd:write(content)
+    target_fd:close()
+end
+
 function Tn:list()
     local files_attrs = fun.iter(dir_iter(self.note_dir))
         :filter(filename_filt_fn(self.file_ext))

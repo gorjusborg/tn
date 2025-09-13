@@ -81,6 +81,16 @@ local function run()
 		local name = cmd.args[1]
 		tn:remove(name)
 	end
+
+	if cmd.subcmd == "copy" then
+		local source_name = cmd.args[1]
+		local target_name = cmd.args[2]
+		local _, err = pcall(tn.copy, tn, source_name, target_name)
+		if err then
+			cli.write_message(io.stderr, err .. "\n")
+			os.exit(1)
+		end
+	end
 end
 
 M.run = run
